@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: pring-boot-ai-research-agent
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+      databse: postgresql
+proxy:
+  host:
+  port:
+  username:
+  password:
+  user-agent:
+scraping:
+  cron: "0 0 */3 * * *"
+  reddit:
+    subreddits: technology,artificial,MachineLearning,startups,SaaS
+    posts-per-subreddit: 25
+  hackernews:
+    top-stories-count: 30
+  producthunt:
+    posts-count: 20
