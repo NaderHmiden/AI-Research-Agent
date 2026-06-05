@@ -5,9 +5,15 @@ import com.nader.aiagent.model.scrapedPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Repository
 public interface ScrapedPostRepository extends JpaRepository<scrapedPost,Long> {
     boolean existByPlatformAndExternalId(Platform platform, String externalId);
 
     Object countByPlatform(Platform platform);
+
+    List<scrapedPost> finAllScrapedAtAfterOrderByScoreDesc(LocalDateTime since);
 }
