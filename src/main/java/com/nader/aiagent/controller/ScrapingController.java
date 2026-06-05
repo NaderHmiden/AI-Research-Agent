@@ -16,17 +16,17 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(":api/scrape")
+@RequestMapping("/api/scrape")
 @RequiredArgsConstructor
 public class ScrapingController {
     private final Orchestration orchestration;
     private final LlmAnalysisService llmAnalysisService;
     private final ScrapedPostRepository scrapedPostRepository;
-    @PatchMapping("/run")
+    @PostMapping("/run")
     public ResponseEntity<Map<String, Object>> triggerFullCycle(){
         final Map<Platform, Integer> scrapedResults = this.orchestration.scrapeAll();
         final LocalDateTime since = LocalDateTime.now().minusHours(6);
-        final List<scrapedPost> posts = this.scrapedPostRepository.finAllScrapedAtAfterOrderByScoreDesc(since);
+        final List<scrapedPost> posts = this.scrapedPostRepository.findAllScrapedAtAfterOrderByScoreDesc(since);
         TrendAnalysis trendAnalysis = null;
         if(!posts.isEmpty()){
             trendAnalysis = this.llmAnalysisService.analyze(posts);
@@ -43,7 +43,7 @@ public class ScrapingController {
     }
     @PostMapping("/platform/{platform}")
     public ResponseEntity<List<scrapedPost>> scrapedPlatform(
-      @PathVariable final Platform platfom
+      @PathVariable final Platform platform
     ){
         return  ResponseEntity.ok(this.orchestration.scrapePlatform(platfom));
     }
@@ -54,8 +54,9 @@ public class ScrapingController {
 
     ){
         if(platform != null) {
-            return ResponseEntity.ok(this.scrapedPostRepository.findByPlatformOrderByScrapedAtDesc(platform);
+            return ResponseEntity.ok(this.scrapedPostRepository.findByPlatformOrderByScrapedAtDesc(platform));
         }
+        return ResponseEntity.ok(this.scrapedPostRepository.findTop200ByOrderByScrapedDesc());
 
     }
 
