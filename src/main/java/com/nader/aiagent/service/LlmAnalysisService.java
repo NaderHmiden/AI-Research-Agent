@@ -1,5 +1,6 @@
 package com.nader.aiagent.service;
 
+import com.nader.aiagent.model.Platform;
 import com.nader.aiagent.model.TrendAnalysis;
 import com.nader.aiagent.model.TrendTopic;
 import com.nader.aiagent.model.scrapedPost;
@@ -10,8 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -101,7 +104,59 @@ public class LlmAnalysisService {
         return prompt.toString();
     }
     private List<TrendTopic> parseTopics(final String rawResponse, final TrendAnalysis analysis){
+        final List<TrendTopic> topics = new ArrayList<>();
+        try{
+            final JsonNode root = this.objectMapper.readTree(rawResponse);
+            final JsonNode contentArray = root.path("content");
+            if(!contentArray.isArray() || contentArray.isEmpty()){
+                log.error("Unexpected groq response strucure: {}", rawResponse);
+                return  topics;
+            }
+            String content = contentArray.get(0).path("text").asText("").strip();
+            if(content.startsWith("```")){
+                content = content.replaceFirst("^```[a-zA-Z]*\\n","").trim();
+                content = content.replaceFirst("^```$\\n","").strip();
+            }
+            final JsonNode trendsArray = this.objectMapper.readTree(content);
+            if(!trendsArray.isArray()) return topics;
+            for (final JsonNode node : trendsArray){
+                try{
+                    final Platform pltform = parsePlatform(node.path("primaryPlatform").asText(""));
+                    final List<String> relatedIds = new ArrayList<>();
+                    final JsonNode relatedNode = node.path("relatedPostIds");
+                    if(relatedNode.isArray()){
+                        for (final JsonNode id : relatedNode){
+                            relatedIds.add(id.asText());
+                        }
+                    }
+                    final TrendTopic topic = TrendTopic.builder()
+                            .topic(node.path("topic").asString(""))
+                            .reasoning(node.path("reasoning").asString(""))
+                            .category(node.path("category").asString((""))
+                             .mentionCount(node.path("mentionCount").asInt(0))
+                            .score(node.path("score").asDouble(0.0))
+                            .primaryPlatform(pltform)
+                                    .samplePostIds(String.join(",", relatedIds))
+                                            .analysis(analysis)
+
+                            .build();
+                            topics.add(topic);
+                }catch (final Exception e){
+                    log.error("Failed to parse trend topic: {}", node, e);
+                }
+            }
+         }catch(Exception e){
+            log.error("Failed to parse trend topic: {}", rawResponse, e)
+        }
+        return topics;
 
     }
-}
+    private Platform parsePlatform(final String primaryPlatform){
+        try{
+            return Platform.valueOf(primaryPlatform.toUpperCase());
 
+        }catch(final Exception e){
+            return null;
+        }
+    }
+}
