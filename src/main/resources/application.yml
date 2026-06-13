@@ -21,6 +21,14 @@ proxy:
   username:
   password:
   user-agent:
+
+
+groq:
+  api-key: ${GROQ_API_KEY}
+  model:
+  base-url:
+  version:
+
 scraping:
   cron: "0 0 */3 * * *"
   reddit:

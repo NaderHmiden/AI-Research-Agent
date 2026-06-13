@@ -43,7 +43,7 @@ public class TrendController {
 
     }
     @GetMapping("/stats")
-    public ResponseEntity<Map<String,Object>> getDashboardStatd(){
+    public ResponseEntity<Map<String,Object>> getDashboardStats(){
         return ResponseEntity.ok(this.trendService.getDashboardStats());
     }
 
