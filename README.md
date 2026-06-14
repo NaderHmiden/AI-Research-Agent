@@ -1,59 +1,81 @@
-# spring-boot-ai-research-agent
+# Spring Boot AI Research Agent
 
-A Spring Boot project containing an AI research agent prototype. Use this repository to explore and develop AI-assisted research features built with Spring Boot.
+![Project](https://img.shields.io/badge/project-spring--boot--ai--research--agent-blue)
 
-## Features
-- Spring Boot application scaffold
-- Placeholder for AI integration and research-agent logic
+Présentation
+------------
+Spring Boot AI Research Agent est un prototype professionnel destiné à explorer et démontrer des fonctionnalités de recherche et d'assistance basées sur l'IA au sein d'une application Java/Spring. Le projet sert de socle pour expérimentations de collecte de données, d'analyse documentaire et d'intégration d'agents de recherche assistés par machine learning.
 
-## Prerequisites
-- Java 17+ (JDK)
-- Maven 3.6+ or Gradle 7+ (depending on project setup)
-- (Optional) Docker to run services in containers
+Valeur ajoutée
+--------------
+- Prototype prêt à l'emploi pour construire des agents de recherche IA dans un écosystème Java.
+- Architecture modulaire permettant d'ajouter rapidement des connecteurs (web scraping, API, bases de données).
+- Conçu pour démonstrations, POC et intégration dans des pipelines de recherche documentaire.
 
-## Build & Run
-If the project uses Maven:
+Principales fonctionnalités
+---------------------------
+- Application Spring Boot (Web, WebFlux, JPA)
+- Connecteurs HTTP (OkHttp) et parsing HTML (Jsoup)
+- Prise en charge PostgreSQL en runtime
+- Modèle d'extension pour intégrer des modèles IA externes ou services cloud
+
+Stack technique
+---------------
+- Java 21
+- Spring Boot 4.x (Web, WebFlux, Data JPA)
+- PostgreSQL (runtime)
+- Jsoup, OkHttp, Lombok
+- Outils de build: Maven
+
+Prérequis
+---------
+- JDK 21+
+- Maven 3.6+
+- (Optionnel) PostgreSQL ou conteneur Docker
+
+Démarrage rapide
+----------------
+1. Construire l'application:
 
 ```powershell
 mvn clean package
-java -jar target/*.jar
 ```
 
-If the project uses Gradle:
+2. Lancer l'application:
 
 ```powershell
-./gradlew build
-java -jar build/libs/*.jar
+java -jar target\*.jar
 ```
 
-If a wrapper (mvnw/gradlew) is present, prefer using it (./mvnw or ./gradlew).
+3. Configuration (exemple application.yml / application.properties)
+- spring.datasource.url=jdbc:postgresql://localhost:5432/yourdb
+- SPRING_PROFILES_ACTIVE=dev
+- Variables d'API pour services IA: AI_API_KEY, AI_API_URL
 
-## Configuration
-Application configuration lives in src/main/resources/application.properties or application.yml. Set environment variables as needed for secrets or external services.
+Bonnes pratiques pour l'intégration IA
+--------------------------------------
+- Ne stocker aucune clé en clair dans le dépôt : utilisez des variables d'environnement ou un gestionnaire de secrets.
+- Journaliser de façon structurée les requêtes/erreurs pour faciliter le debug et l'audit.
+- Ajouter des tests d'intégration simulant les réponses des services IA.
 
-## Testing
-Run unit and integration tests with:
+Architecture et extension
+-------------------------
+Le projet est organisé pour séparer :
+- couche d'accès aux données (JPA)
+- couche de service (logique métier, orchestrations d'agent)
+- couche d'intégration externe (connecteurs HTTP, adaptateurs IA)
 
-Maven:
+Contribution
+------------
+Contributions bienvenues :
+- Ouvrir une issue pour proposer une fonctionnalité ou signaler un bug
+- Créer une branche dédiée, ajouter des tests et soumettre une Pull Request
 
-```powershell
-mvn test
-```
-
-Gradle:
-
-```powershell
-./gradlew test
-```
-
-## Contributing
-- Open an issue to discuss larger changes
-- Create feature branches from main and submit a PR
-- Keep changes focused and include tests where appropriate
-
-## License
-No license specified. Add a LICENSE file if you intend to open-source this project.
+Licence et contact
+------------------
+Aucune licence fournie par défaut. Ajouter un fichier LICENSE si ouverture du projet prévue.
+Pour questions ou démonstrations, contacter l'auteur du dépôt.
 
 ---
 
-If you want, update this README with repository-specific build commands or details (e.g., which build tool is used, how to configure AI keys, or example requests).
+Suggestions de personnalisation : indiquer le propriétaire du projet, les exemples d'API IA supportées (OpenAI, Cohere, etc.), et fournir des scénarios d'utilisation concrets (ex: recherche d'articles, extraction de résumés, monitoring de littérature).
